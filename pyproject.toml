@@ -37,9 +37,9 @@ dev = [
 tinyedge-runtime-validate = "tinyedge_runtime.conformance:main"
 
 [project.urls]
-Homepage = "https://github.com/TinyEdgeAI/tinyedge-runtime"
-Issues = "https://github.com/TinyEdgeAI/tinyedge-runtime/issues"
-Source = "https://github.com/TinyEdgeAI/tinyedge-runtime"
+Homepage = "https://github.com/PhysicalSystems/tinyedge-runtime"
+Issues = "https://github.com/PhysicalSystems/tinyedge-runtime/issues"
+Source = "https://github.com/PhysicalSystems/tinyedge-runtime"
 
 [tool.setuptools.packages.find]
 where = ["src"]
