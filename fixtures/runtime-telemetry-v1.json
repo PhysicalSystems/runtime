@@ -1,0 +1,16 @@
+{
+  "cleanup_failures": [],
+  "contract_version": "tinyedge-runtime-telemetry-v1",
+  "last_action_age_ns": 0,
+  "last_inference_ns": 1000000,
+  "last_observation_age_ns": 2000000,
+  "last_stop_reason": "closed",
+  "plan_hash": "sha256:c908fff1fb782eab2c6013ac3ef5c5ac5a93d2250b6c741c6981d7435564831f",
+  "rejected_actions": 0,
+  "safe_stop_confirmed": true,
+  "safe_stop_count": 1,
+  "stale_observations": 0,
+  "state": "closed",
+  "steps_attempted": 1,
+  "steps_succeeded": 1
+}

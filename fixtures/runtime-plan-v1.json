@@ -1,0 +1,46 @@
+{
+  "action_schema_id": "joint_position_v1",
+  "artifacts": [
+    {
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "kind": "model",
+      "name": "smolvla"
+    }
+  ],
+  "bundle_digest": "sha256:f4f391e708a64155603d97f3cdde86a1ae50c3524f1fe3772c7be77335890ad4",
+  "bundle_id": "fake_local",
+  "clock_domain": "runtime_monotonic",
+  "contract_version": "tinyedge-runtime-plan-v1",
+  "execution_strategy": "local_sync_v1",
+  "observation_schema_id": "fake_obs_v1",
+  "plan_hash": "sha256:c908fff1fb782eab2c6013ac3ef5c5ac5a93d2250b6c741c6981d7435564831f",
+  "plan_id": "test_plan",
+  "safety": {
+    "action_axes": [
+      "joint_1",
+      "joint_2"
+    ],
+    "action_dimensions": 2,
+    "action_schema_id": "joint_position_v1",
+    "lower_limits": [
+      -1.0,
+      -1.0
+    ],
+    "max_action_age_ns": 50000000,
+    "max_observation_age_ns": 100000000,
+    "on_violation": "safe_stop",
+    "units": [
+      "radian",
+      "radian"
+    ],
+    "upper_limits": [
+      1.0,
+      1.0
+    ]
+  },
+  "target": {
+    "capability_digest": "sha256:7e1fb179f1d5a6b7de239b422cde974a0ee67396d5aa47b83f002687e5b8e582",
+    "device_id": "fake_device",
+    "environment_id": "test"
+  }
+}

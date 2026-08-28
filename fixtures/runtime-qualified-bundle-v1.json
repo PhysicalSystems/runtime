@@ -1,0 +1,61 @@
+{
+  "action_axes": [
+    "joint_1",
+    "joint_2"
+  ],
+  "action_schema_id": "joint_position_v1",
+  "action_units": [
+    "radian",
+    "radian"
+  ],
+  "bundle_id": "fake_local",
+  "clock_domain": "runtime_monotonic",
+  "contract_version": "tinyedge-runtime-qualified-bundle-v1",
+  "execution_strategy": "local_sync_v1",
+  "model": {
+    "adapter_id": "fake_model",
+    "kind": "model",
+    "version": "1.0"
+  },
+  "observation_schema_id": "fake_obs_v1",
+  "required_artifacts": [
+    {
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "kind": "model",
+      "name": "smolvla"
+    }
+  ],
+  "robot": {
+    "adapter_id": "fake_robot",
+    "kind": "robot",
+    "version": "1.0"
+  },
+  "safety_envelope": {
+    "action_axes": [
+      "joint_1",
+      "joint_2"
+    ],
+    "action_dimensions": 2,
+    "action_schema_id": "joint_position_v1",
+    "lower_limits": [
+      -1.0,
+      -1.0
+    ],
+    "max_action_age_ns": 50000000,
+    "max_observation_age_ns": 100000000,
+    "on_violation": "safe_stop",
+    "units": [
+      "radian",
+      "radian"
+    ],
+    "upper_limits": [
+      1.0,
+      1.0
+    ]
+  },
+  "sensor": {
+    "adapter_id": "fake_sensor",
+    "kind": "sensor",
+    "version": "1.0"
+  }
+}

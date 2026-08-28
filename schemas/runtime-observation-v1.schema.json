@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tinyedge.ai/schemas/runtime/runtime-observation-v1.schema.json",
+  "title": "TinyEdge Runtime observation v1",
+  "description": "Structural projection of one locally clocked TinyEdge Runtime v1 observation.",
+  "$comment": "This schema is a portable structural projection. The tinyedge_runtime Python parser remains authoritative for cross-field timestamp ordering and all semantic validation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "observation_id",
+    "sequence",
+    "captured_monotonic_ns",
+    "received_monotonic_ns",
+    "clock_domain",
+    "observation_schema_id",
+    "sensor_values",
+    "robot_state"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "tinyedge-observation-v1"
+    },
+    "observation_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "sequence": {
+      "$ref": "#/$defs/nonnegativeInteger"
+    },
+    "captured_monotonic_ns": {
+      "$ref": "#/$defs/nonnegativeInteger"
+    },
+    "received_monotonic_ns": {
+      "$ref": "#/$defs/nonnegativeInteger"
+    },
+    "clock_domain": {
+      "$ref": "#/$defs/identifier"
+    },
+    "observation_schema_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "sensor_values": {
+      "$ref": "#/$defs/numericVector"
+    },
+    "robot_state": {
+      "$ref": "#/$defs/numericVector"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,127}$"
+    },
+    "nonnegativeInteger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9223372036854775807
+    },
+    "boundedNumber": {
+      "type": "number",
+      "minimum": -1000000000000,
+      "maximum": 1000000000000
+    },
+    "numericVector": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1024,
+      "items": {
+        "$ref": "#/$defs/boundedNumber"
+      }
+    }
+  }
+}

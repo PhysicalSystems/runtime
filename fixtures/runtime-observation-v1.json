@@ -1,0 +1,17 @@
+{
+  "captured_monotonic_ns": 1000000000,
+  "clock_domain": "runtime_monotonic",
+  "contract_version": "tinyedge-observation-v1",
+  "observation_id": "obs_0001",
+  "observation_schema_id": "fake_obs_v1",
+  "received_monotonic_ns": 1001000000,
+  "robot_state": [
+    0,
+    0
+  ],
+  "sensor_values": [
+    0.25,
+    -0.5
+  ],
+  "sequence": 1
+}
