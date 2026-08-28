@@ -1,0 +1,35 @@
+{
+  "action_axes": [
+    "joint_1",
+    "joint_2"
+  ],
+  "action_id": "act_0001",
+  "action_period_ns": 20000000,
+  "action_schema_id": "joint_position_v1",
+  "clock_domain": "runtime_monotonic",
+  "committed_prefix": 1,
+  "contract_version": "tinyedge-action-chunk-v1",
+  "created_monotonic_ns": 1002000000,
+  "expires_at_monotonic_ns": 1100000000,
+  "model_artifact_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "source_observation_id": "obs_0001",
+  "units": [
+    "radian",
+    "radian"
+  ],
+  "valid_from_monotonic_ns": 1002000000,
+  "values": [
+    [
+      0.1,
+      -0.1
+    ],
+    [
+      0.2,
+      -0.2
+    ],
+    [
+      0.3,
+      -0.3
+    ]
+  ]
+}

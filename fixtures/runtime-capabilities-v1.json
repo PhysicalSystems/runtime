@@ -1,0 +1,29 @@
+{
+  "adapters": [
+    {
+      "adapter_id": "fake_model",
+      "kind": "model",
+      "version": "1.0"
+    },
+    {
+      "adapter_id": "fake_robot",
+      "kind": "robot",
+      "version": "1.0"
+    },
+    {
+      "adapter_id": "fake_sensor",
+      "kind": "sensor",
+      "version": "1.0"
+    }
+  ],
+  "capability_digest": "sha256:7e1fb179f1d5a6b7de239b422cde974a0ee67396d5aa47b83f002687e5b8e582",
+  "contract_version": "tinyedge-runtime-capabilities-v1",
+  "device_id": "fake_device",
+  "environment_id": "test",
+  "qualified_bundles": [
+    {
+      "bundle_digest": "sha256:f4f391e708a64155603d97f3cdde86a1ae50c3524f1fe3772c7be77335890ad4",
+      "bundle_id": "fake_local"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tinyedge-runtime"
+version = "0.1.0"
+description = "Open-source execution kernel and strategy SDK for TinyEdge devices and robots"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{name = "TinyEdge"}]
+keywords = ["edge-ai", "robotics", "runtime", "vla"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2,<2",
+  "jsonschema>=4.23,<5",
+  "pytest>=8,<9",
+  "twine>=5,<7",
+]
+
+[project.scripts]
+tinyedge-runtime-validate = "tinyedge_runtime.conformance:main"
+
+[project.urls]
+Homepage = "https://github.com/TinyEdgeAI/tinyedge-runtime"
+Issues = "https://github.com/TinyEdgeAI/tinyedge-runtime/issues"
+Source = "https://github.com/TinyEdgeAI/tinyedge-runtime"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+tinyedge_runtime = ["py.typed"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-config --strict-markers"
+testpaths = ["tests"]

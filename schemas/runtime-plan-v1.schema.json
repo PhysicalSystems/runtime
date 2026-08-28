@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tinyedge.ai/schemas/runtime/runtime-plan-v1.schema.json",
+  "title": "TinyEdge Runtime plan v1",
+  "description": "Structural projection of a sealed TinyEdge Runtime v1 execution plan.",
+  "$comment": "This schema is a portable structural projection. The tinyedge_runtime Python parser remains authoritative for canonical artifact ordering and uniqueness, cross-field safety relationships, and plan-hash verification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "plan_id",
+    "bundle_id",
+    "bundle_digest",
+    "execution_strategy",
+    "clock_domain",
+    "observation_schema_id",
+    "action_schema_id",
+    "artifacts",
+    "target",
+    "safety",
+    "plan_hash"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "tinyedge-runtime-plan-v1"
+    },
+    "plan_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "bundle_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "bundle_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "execution_strategy": {
+      "$ref": "#/$defs/identifier"
+    },
+    "clock_domain": {
+      "$ref": "#/$defs/identifier"
+    },
+    "observation_schema_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "action_schema_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/artifactRef"
+      }
+    },
+    "target": {
+      "$ref": "#/$defs/targetLock"
+    },
+    "safety": {
+      "$ref": "#/$defs/safetyPolicy"
+    },
+    "plan_hash": {
+      "$ref": "#/$defs/digest"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,127}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "positiveInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9223372036854775807
+    },
+    "boundedNumber": {
+      "type": "number",
+      "minimum": -1000000000000,
+      "maximum": 1000000000000
+    },
+    "identifierVector": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1024,
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "numericVector": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1024,
+      "items": {
+        "$ref": "#/$defs/boundedNumber"
+      }
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "kind",
+        "digest"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/identifier"
+        },
+        "kind": {
+          "$ref": "#/$defs/identifier"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "targetLock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "device_id",
+        "environment_id",
+        "capability_digest"
+      ],
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "environment_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "capability_digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "safetyPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_schema_id",
+        "action_dimensions",
+        "action_axes",
+        "units",
+        "lower_limits",
+        "upper_limits",
+        "max_observation_age_ns",
+        "max_action_age_ns",
+        "on_violation"
+      ],
+      "properties": {
+        "action_schema_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "action_dimensions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1024
+        },
+        "action_axes": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/identifierVector"
+            },
+            {
+              "uniqueItems": true
+            }
+          ]
+        },
+        "units": {
+          "$ref": "#/$defs/identifierVector"
+        },
+        "lower_limits": {
+          "$ref": "#/$defs/numericVector"
+        },
+        "upper_limits": {
+          "$ref": "#/$defs/numericVector"
+        },
+        "max_observation_age_ns": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "max_action_age_ns": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "on_violation": {
+          "const": "safe_stop"
+        }
+      }
+    }
+  }
+}
