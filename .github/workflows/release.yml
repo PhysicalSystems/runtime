@@ -1,0 +1,119 @@
+name: Publish Python package
+
+on:
+  release:
+    types: [published]
+
+permissions: {}
+
+concurrency:
+  group: pypi-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  validate-release-assets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Verify release tag matches package version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          python - <<'PY'
+          import os
+          import tomllib
+          from pathlib import Path
+
+          version = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
+          expected = f"v{version}"
+          if os.environ["RELEASE_TAG"] != expected:
+              raise SystemExit(f"release tag {os.environ['RELEASE_TAG']!r} does not match {expected!r}")
+          PY
+      - name: Download immutable release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          mkdir dist
+          gh release download "$RELEASE_TAG" --dir dist \
+            --pattern "*.whl" \
+            --pattern "*.tar.gz" \
+            --pattern "SHA256SUMS.txt"
+      - name: Verify artifact set and checksums
+        run: |
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          root = Path("dist")
+          wheels = list(root.glob("*.whl"))
+          sdists = list(root.glob("*.tar.gz"))
+          checksum_path = root / "SHA256SUMS.txt"
+          if len(wheels) != 1 or len(sdists) != 1 or not checksum_path.is_file():
+              raise SystemExit("release must contain exactly one wheel, one sdist and SHA256SUMS.txt")
+
+          expected_names = {wheels[0].name, sdists[0].name}
+          entries = {}
+          for line in checksum_path.read_text(encoding="utf-8").splitlines():
+              digest, filename = line.split("  ", 1)
+              if filename in entries:
+                  raise SystemExit(f"duplicate checksum entry for {filename}")
+              entries[filename] = digest.lower()
+          if set(entries) != expected_names:
+              raise SystemExit(f"checksum entries {set(entries)!r} do not match artifacts {expected_names!r}")
+
+          for path in (*wheels, *sdists):
+              actual = hashlib.sha256(path.read_bytes()).hexdigest()
+              if actual != entries[path.name]:
+                  raise SystemExit(f"SHA-256 mismatch for {path.name}")
+          PY
+      - name: Validate and smoke-test distributions
+        run: |
+          python -m pip install --upgrade "pip>=25,<27" "twine>=5,<7"
+          python -m twine check dist/*.whl dist/*.tar.gz
+          python -m pip install --no-deps --force-reinstall dist/*.whl
+          python - <<'PY'
+          import importlib.metadata
+          import os
+          import subprocess
+          import tinyedge_runtime
+
+          expected = os.environ["RELEASE_TAG"].removeprefix("v")
+          assert tinyedge_runtime.__version__ == expected
+          assert importlib.metadata.version("tinyedge-runtime") == expected
+          subprocess.run(["tinyedge-runtime-validate", "fixtures/runtime-plan-v1.json"], check=True)
+          PY
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: python-package-${{ github.event.release.tag_name }}
+          path: |
+            dist/*.whl
+            dist/*.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-to-pypi:
+    needs: validate-release-assets
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/tinyedge-runtime
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: python-package-${{ github.event.release.tag_name }}
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@a892a5a61159132606e93a2fa6f4358831b04d26 # v1.14.2
