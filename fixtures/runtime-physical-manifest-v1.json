@@ -1,0 +1,186 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "so101_waypoints",
+      "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "kind": "waypoint_catalog",
+      "qualification": "qualified"
+    }
+  ],
+  "contract_version": "tinyedge-runtime-physical-manifest-v1",
+  "devices": [
+    {
+      "adapter_id": "fixed_camera",
+      "adapter_revision": null,
+      "adapter_version": "1.0",
+      "calibration_digest": null,
+      "commands": [
+        {
+          "command_id": "capture_state",
+          "effect": "read_only",
+          "input_fields": [
+            {
+              "maximum": null,
+              "minimum": null,
+              "name": "view_id",
+              "required": true,
+              "unit": null,
+              "value_type": "identifier"
+            }
+          ],
+          "output_fields": [
+            {
+              "maximum": null,
+              "minimum": null,
+              "name": "observation_digest",
+              "required": true,
+              "unit": null,
+              "value_type": "digest"
+            }
+          ],
+          "qualification": "qualified",
+          "required_artifacts": [],
+          "required_resources": [
+            "overhead_camera"
+          ]
+        }
+      ],
+      "device_id": "overhead_camera",
+      "hardware_identity_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "trust_domain_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "kind": "camera",
+      "state_fields": [
+        {
+          "maximum": null,
+          "minimum": null,
+          "name": "connected",
+          "required": true,
+          "unit": null,
+          "value_type": "boolean"
+        },
+        {
+          "maximum": null,
+          "minimum": null,
+          "name": "cup_location",
+          "required": true,
+          "unit": null,
+          "value_type": "identifier"
+        },
+        {
+          "maximum": null,
+          "minimum": null,
+          "name": "last_observation_digest",
+          "required": false,
+          "unit": null,
+          "value_type": "digest"
+        }
+      ]
+    },
+    {
+      "adapter_id": "so101_waypoint",
+      "adapter_revision": "rev_a",
+      "adapter_version": "1.0",
+      "calibration_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "commands": [
+        {
+          "command_id": "move_to_waypoint",
+          "effect": "actuating",
+          "input_fields": [
+            {
+              "maximum": 0.25,
+              "minimum": 0.05,
+              "name": "speed_scale",
+              "required": true,
+              "unit": "ratio",
+              "value_type": "number"
+            },
+            {
+              "maximum": null,
+              "minimum": null,
+              "name": "waypoint_id",
+              "required": true,
+              "unit": null,
+              "value_type": "identifier"
+            }
+          ],
+          "output_fields": [
+            {
+              "maximum": null,
+              "minimum": null,
+              "name": "motion_completed",
+              "required": true,
+              "unit": null,
+              "value_type": "boolean"
+            }
+          ],
+          "qualification": "qualified",
+          "required_artifacts": [
+            "so101_waypoints"
+          ],
+          "required_resources": [
+            "so101_arm",
+            "workcell_motion_zone"
+          ]
+        },
+        {
+          "command_id": "safe_stop",
+          "effect": "safety_stop",
+          "input_fields": [],
+          "output_fields": [
+            {
+              "maximum": null,
+              "minimum": null,
+              "name": "motion_stopped",
+              "required": true,
+              "unit": null,
+              "value_type": "boolean"
+            }
+          ],
+          "qualification": "qualified",
+          "required_artifacts": [],
+          "required_resources": [
+            "so101_arm"
+          ]
+        }
+      ],
+      "device_id": "so101_arm",
+      "hardware_identity_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "trust_domain_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "kind": "robot_arm",
+      "state_fields": [
+        {
+          "maximum": null,
+          "minimum": null,
+          "name": "connected",
+          "required": true,
+          "unit": null,
+          "value_type": "boolean"
+        },
+        {
+          "maximum": null,
+          "minimum": null,
+          "name": "motion_state",
+          "required": true,
+          "unit": null,
+          "value_type": "identifier"
+        }
+      ]
+    }
+  ],
+  "manifest_digest": "sha256:981c2d3d508098ed32bdb43be5f736cb6deff84e7f89369be8c62cc44363f1af",
+  "resources": [
+    {
+      "kind": "device",
+      "resource_id": "overhead_camera"
+    },
+    {
+      "kind": "device",
+      "resource_id": "so101_arm"
+    },
+    {
+      "kind": "exclusive_zone",
+      "resource_id": "workcell_motion_zone"
+    }
+  ],
+  "system_id": "physical_demo_cell"
+}

@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tinyedge.ai/schemas/runtime/runtime-physical-protocol-v1.schema.json",
+  "title": "TinyEdge Runtime physical protocol v1",
+  "description": "Structural projection of one sealed deterministic Physical Systems protocol.",
+  "$comment": "This schema is a portable structural projection. The tinyedge_runtime Python parser remains authoritative for canonical ordering and uniqueness, manifest/device/command/resource references, typed argument values and bounds, reserved safety-stop handling, evidence predicate typing, freshness, trust-domain independence and locked-producer coverage for actuating steps, and protocol-hash verification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "protocol_id",
+    "manifest_digest",
+    "failure_policy",
+    "steps",
+    "protocol_hash"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "tinyedge-runtime-physical-protocol-v1"
+    },
+    "protocol_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "manifest_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "failure_policy": {
+      "const": "safe_stop"
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1024,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    },
+    "protocol_hash": {
+      "$ref": "#/$defs/digest"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,127}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "positiveInteger": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 300000000000
+    },
+    "scalarValue": {
+      "type": [
+        "boolean",
+        "integer",
+        "number",
+        "string"
+      ],
+      "minimum": -1000000000000,
+      "maximum": 1000000000000,
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "identifierVector": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 320,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "argument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value_type",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/identifier"
+        },
+        "value_type": {
+          "enum": [
+            "boolean",
+            "integer",
+            "number",
+            "string",
+            "identifier",
+            "digest"
+          ]
+        },
+        "value": {
+          "$ref": "#/$defs/scalarValue"
+        }
+      }
+    },
+    "evidenceRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_id",
+        "evidence_kind",
+        "producer_device_id",
+        "phase",
+        "state_field",
+        "value_type",
+        "operator",
+        "expected_value",
+        "maximum_age_ns"
+      ],
+      "properties": {
+        "requirement_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "evidence_kind": {
+          "$ref": "#/$defs/identifier"
+        },
+        "producer_device_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "phase": {
+          "enum": [
+            "precondition",
+            "postcondition"
+          ]
+        },
+        "state_field": {
+          "$ref": "#/$defs/identifier"
+        },
+        "value_type": {
+          "enum": [
+            "boolean",
+            "integer",
+            "number",
+            "string",
+            "identifier",
+            "digest"
+          ]
+        },
+        "operator": {
+          "enum": [
+            "equals",
+            "not_equals",
+            "greater_or_equal",
+            "less_or_equal"
+          ]
+        },
+        "expected_value": {
+          "$ref": "#/$defs/scalarValue"
+        },
+        "maximum_age_ns": {
+          "$ref": "#/$defs/positiveInteger"
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "device_id",
+        "command_id",
+        "arguments",
+        "resource_ids",
+        "timeout_ns",
+        "evidence_requirements"
+      ],
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "device_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "command_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "arguments": {
+          "type": "array",
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/argument"
+          }
+        },
+        "resource_ids": {
+          "$ref": "#/$defs/identifierVector"
+        },
+        "timeout_ns": {
+          "$ref": "#/$defs/positiveInteger"
+        },
+        "evidence_requirements": {
+          "type": "array",
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/evidenceRequirement"
+          }
+        }
+      }
+    }
+  }
+}

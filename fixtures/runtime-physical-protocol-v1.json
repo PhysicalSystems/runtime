@@ -1,0 +1,73 @@
+{
+  "contract_version": "tinyedge-runtime-physical-protocol-v1",
+  "failure_policy": "safe_stop",
+  "manifest_digest": "sha256:981c2d3d508098ed32bdb43be5f736cb6deff84e7f89369be8c62cc44363f1af",
+  "protocol_hash": "sha256:f278a042d3730e5595efa681455afdbea19fa45b07a72f26be1f8af682fed1ab",
+  "protocol_id": "move_sample_cup",
+  "steps": [
+    {
+      "arguments": [
+        {
+          "name": "view_id",
+          "value": "source_station",
+          "value_type": "identifier"
+        }
+      ],
+      "command_id": "capture_state",
+      "device_id": "overhead_camera",
+      "evidence_requirements": [],
+      "resource_ids": [
+        "overhead_camera"
+      ],
+      "step_id": "observe_source",
+      "timeout_ns": 2000000000
+    },
+    {
+      "arguments": [
+        {
+          "name": "speed_scale",
+          "value": 0.1,
+          "value_type": "number"
+        },
+        {
+          "name": "waypoint_id",
+          "value": "destination_station",
+          "value_type": "identifier"
+        }
+      ],
+      "command_id": "move_to_waypoint",
+      "device_id": "so101_arm",
+      "evidence_requirements": [
+        {
+          "evidence_kind": "physical_state",
+          "expected_value": "destination_station",
+          "maximum_age_ns": 500000000,
+          "operator": "equals",
+          "phase": "postcondition",
+          "producer_device_id": "overhead_camera",
+          "requirement_id": "destination_state",
+          "state_field": "cup_location",
+          "value_type": "identifier"
+        },
+        {
+          "evidence_kind": "physical_state",
+          "expected_value": "source_station",
+          "maximum_age_ns": 500000000,
+          "operator": "equals",
+          "phase": "precondition",
+          "producer_device_id": "overhead_camera",
+          "requirement_id": "source_state",
+          "state_field": "cup_location",
+          "value_type": "identifier"
+        }
+      ],
+      "resource_ids": [
+        "overhead_camera",
+        "so101_arm",
+        "workcell_motion_zone"
+      ],
+      "step_id": "move_to_destination",
+      "timeout_ns": 10000000000
+    }
+  ]
+}

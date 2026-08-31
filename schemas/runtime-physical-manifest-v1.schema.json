@@ -1,0 +1,312 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tinyedge.ai/schemas/runtime/runtime-physical-manifest-v1.schema.json",
+  "title": "TinyEdge Runtime physical manifest v1",
+  "description": "Structural projection of one sealed Physical Systems artifact, resource, device, state and command catalogue.",
+  "$comment": "This schema is a portable structural projection. The tinyedge_runtime Python parser remains authoritative for canonical ordering and uniqueness, artifact, resource and device references, typed-field units and numeric bounds, trust-domain bindings, command and artifact qualification, safety-stop qualification, and manifest-digest verification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "system_id",
+    "artifacts",
+    "resources",
+    "devices",
+    "manifest_digest"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "tinyedge-runtime-physical-manifest-v1"
+    },
+    "system_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "artifacts": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "resources": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/resource"
+      }
+    },
+    "devices": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/device"
+      }
+    },
+    "manifest_digest": {
+      "$ref": "#/$defs/digest"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,127}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "identifierVector": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "typedFieldVector": {
+      "type": "array",
+      "maxItems": 128,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/typedField"
+      }
+    },
+    "artifactIdVector": {
+      "type": "array",
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/identifier"
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "kind",
+        "digest",
+        "qualification"
+      ],
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "kind": {
+          "$ref": "#/$defs/identifier"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "qualification": {
+          "enum": [
+            "qualified",
+            "provisional",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_id",
+        "kind"
+      ],
+      "properties": {
+        "resource_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "kind": {
+          "$ref": "#/$defs/identifier"
+        }
+      }
+    },
+    "typedField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "value_type",
+        "required",
+        "unit",
+        "minimum",
+        "maximum"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/identifier"
+        },
+        "value_type": {
+          "enum": [
+            "boolean",
+            "integer",
+            "number",
+            "string",
+            "identifier",
+            "digest"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "minimum": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -1000000000000,
+          "maximum": 1000000000000
+        },
+        "maximum": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -1000000000000,
+          "maximum": 1000000000000
+        }
+      }
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_id",
+        "effect",
+        "qualification",
+        "input_fields",
+        "output_fields",
+        "required_resources",
+        "required_artifacts"
+      ],
+      "properties": {
+        "command_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "effect": {
+          "enum": [
+            "read_only",
+            "actuating",
+            "safety_stop"
+          ]
+        },
+        "qualification": {
+          "enum": [
+            "qualified",
+            "provisional",
+            "blocked"
+          ]
+        },
+        "input_fields": {
+          "$ref": "#/$defs/typedFieldVector"
+        },
+        "output_fields": {
+          "$ref": "#/$defs/typedFieldVector"
+        },
+        "required_resources": {
+          "$ref": "#/$defs/identifierVector"
+        },
+        "required_artifacts": {
+          "$ref": "#/$defs/artifactIdVector"
+        }
+      }
+    },
+    "device": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "device_id",
+        "kind",
+        "adapter_id",
+        "adapter_version",
+        "adapter_revision",
+        "hardware_identity_digest",
+        "trust_domain_digest",
+        "calibration_digest",
+        "state_fields",
+        "commands"
+      ],
+      "properties": {
+        "device_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "kind": {
+          "$ref": "#/$defs/identifier"
+        },
+        "adapter_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "adapter_version": {
+          "$ref": "#/$defs/version"
+        },
+        "adapter_revision": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/version"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hardware_identity_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "trust_domain_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "calibration_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state_fields": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/typedFieldVector"
+            },
+            {
+              "minItems": 1
+            }
+          ]
+        },
+        "commands": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/command"
+          }
+        }
+      }
+    }
+  }
+}

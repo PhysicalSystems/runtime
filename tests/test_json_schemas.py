@@ -15,6 +15,9 @@ from jsonschema.exceptions import ValidationError
 from tinyedge_runtime.contracts import (
     ActionChunk,
     ObservationEnvelope,
+    PhysicalProtocol,
+    PhysicalRunRecord,
+    PhysicalSystemManifest,
     RuntimeCapabilities,
     RuntimeContractError,
     RuntimePlan,
@@ -35,6 +38,9 @@ CONTRACTS: tuple[tuple[str, Parser], ...] = (
     ("runtime-observation-v1", ObservationEnvelope.from_dict),
     ("runtime-action-chunk-v1", ActionChunk.from_dict),
     ("runtime-telemetry-v1", RuntimeTelemetrySummary.from_dict),
+    ("runtime-physical-manifest-v1", PhysicalSystemManifest.from_dict),
+    ("runtime-physical-protocol-v1", PhysicalProtocol.from_dict),
+    ("runtime-physical-run-record-v1", PhysicalRunRecord.from_dict),
 )
 
 
