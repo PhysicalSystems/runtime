@@ -22,7 +22,13 @@ no execution authority. See
 
 ## Install
 
-The first packaged release is being prepared. From a checkout:
+Install the immutable Runtime release from PyPI:
+
+```powershell
+python -m pip install "tinyedge-runtime==0.1.0"
+```
+
+For development from a checkout:
 
 ```powershell
 python -m pip install -e ".[dev]"
@@ -63,6 +69,11 @@ resource in reverse order, and preserves the primary failure.
 - `tests/`: deterministic contract, compatibility and lifecycle tests.
 - `docs/runtime-v1.md`: normative Runtime v1 behavior and non-goals.
 - `BOUNDARY.md`: ownership across Runtime, Agent, Platform and Benchmarks.
+
+The wheel contains the Python Runtime package. The language-neutral JSON
+schemas and golden fixtures are release-controlled source artifacts and are
+included in the source distribution and tagged GitHub source, rather than
+installed into Python's package directory.
 
 Validate one or more contract documents with:
 

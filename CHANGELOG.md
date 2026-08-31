@@ -2,7 +2,7 @@
 
 All notable changes to TinyEdge Runtime are documented here.
 
-## 0.1.0 - Unreleased
+## 0.1.0 - 2026-08-31
 
 - Extract the stdlib-only Runtime v1 kernel from `tinyedge-agent`.
 - Publish six strict wire contracts and their golden fixtures.
