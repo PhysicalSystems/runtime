@@ -1,0 +1,329 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tinyedge.ai/schemas/runtime/runtime-physical-run-record-v1.schema.json",
+  "title": "TinyEdge Runtime physical run record v1",
+  "description": "Structural projection of one sealed Physical Systems execution record.",
+  "$comment": "This schema is a portable structural projection. The tinyedge_runtime Python parser remains authoritative for lifecycle ordering, lock timing, command acknowledgement and completion semantics, typed evidence predicate coverage, freshness and execution barriers, blocked precondition evidence, safe-stop ordering and consistency, outcome consistency, and run-digest verification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "run_id",
+    "manifest_digest",
+    "protocol_hash",
+    "authorization_digest",
+    "lifecycle",
+    "locks",
+    "commands",
+    "evidence",
+    "safe_stops",
+    "outcome",
+    "run_digest"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "tinyedge-runtime-physical-run-record-v1"
+    },
+    "run_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "manifest_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "protocol_hash": {
+      "$ref": "#/$defs/digest"
+    },
+    "authorization_digest": {
+      "$ref": "#/$defs/digest"
+    },
+    "lifecycle": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/transition"
+      }
+    },
+    "locks": {
+      "type": "array",
+      "maxItems": 320,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/resourceLock"
+      }
+    },
+    "commands": {
+      "type": "array",
+      "maxItems": 1024,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/commandRecord"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "maxItems": 4096,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/evidenceRef"
+      }
+    },
+    "safe_stops": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/safeStopRecord"
+      }
+    },
+    "outcome": {
+      "$ref": "#/$defs/outcome"
+    },
+    "run_digest": {
+      "$ref": "#/$defs/digest"
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,127}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "nonnegativeInteger": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9223372036854775807
+    },
+    "optionalNonnegativeInteger": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "optionalIdentifier": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "scalarValue": {
+      "type": [
+        "boolean",
+        "integer",
+        "number",
+        "string"
+      ],
+      "minimum": -1000000000000,
+      "maximum": 1000000000000,
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequence",
+        "state",
+        "monotonic_ns"
+      ],
+      "properties": {
+        "sequence": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "state": {
+          "enum": [
+            "created",
+            "locked",
+            "running",
+            "succeeded",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "monotonic_ns": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        }
+      }
+    },
+    "resourceLock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_id",
+        "acquired_monotonic_ns",
+        "released_monotonic_ns"
+      ],
+      "properties": {
+        "resource_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "acquired_monotonic_ns": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "released_monotonic_ns": {
+          "$ref": "#/$defs/optionalNonnegativeInteger"
+        }
+      }
+    },
+    "commandRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dispatch_id",
+        "step_id",
+        "status",
+        "dispatched_monotonic_ns",
+        "acknowledged_monotonic_ns",
+        "completed_monotonic_ns",
+        "failure_code"
+      ],
+      "properties": {
+        "dispatch_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "step_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "status": {
+          "enum": [
+            "acknowledged",
+            "timed_out",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "dispatched_monotonic_ns": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "acknowledged_monotonic_ns": {
+          "$ref": "#/$defs/optionalNonnegativeInteger"
+        },
+        "completed_monotonic_ns": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "failure_code": {
+          "$ref": "#/$defs/optionalIdentifier"
+        }
+      }
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "step_id",
+        "requirement_id",
+        "evidence_kind",
+        "producer_device_id",
+        "state_field",
+        "value_type",
+        "observed_value",
+        "digest",
+        "captured_monotonic_ns"
+      ],
+      "properties": {
+        "evidence_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "step_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "requirement_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "evidence_kind": {
+          "$ref": "#/$defs/identifier"
+        },
+        "producer_device_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "state_field": {
+          "$ref": "#/$defs/identifier"
+        },
+        "value_type": {
+          "enum": [
+            "boolean",
+            "integer",
+            "number",
+            "string",
+            "identifier",
+            "digest"
+          ]
+        },
+        "observed_value": {
+          "$ref": "#/$defs/scalarValue"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "captured_monotonic_ns": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        }
+      }
+    },
+    "safeStopRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dispatch_id",
+        "device_id",
+        "dispatched_monotonic_ns",
+        "completed_monotonic_ns",
+        "confirmed",
+        "failure_code"
+      ],
+      "properties": {
+        "dispatch_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "device_id": {
+          "$ref": "#/$defs/identifier"
+        },
+        "dispatched_monotonic_ns": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "completed_monotonic_ns": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "confirmed": {
+          "type": "boolean"
+        },
+        "failure_code": {
+          "$ref": "#/$defs/optionalIdentifier"
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "failure_code"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "succeeded",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "failure_code": {
+          "$ref": "#/$defs/optionalIdentifier"
+        }
+      }
+    }
+  }
+}

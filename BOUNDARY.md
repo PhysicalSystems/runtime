@@ -21,3 +21,12 @@ Runtime executes an explicit strategy. A managed optimizer may choose the
 strategy and parameters, but that selection intelligence does not need to live
 in the public kernel. Generic strategies can ship here; hardware-specific or
 commercial integrations can ship as separate adapter packages.
+
+For physical workflows, Runtime owns only the neutral manifest, protocol,
+run-record semantics and side-effect-free compatibility checks. Agent owns the
+explicit mapping from MHS, ROS, LeRobot or vendor drivers, current readiness,
+authorization, concrete locks, watchdogs and device I/O. A Runtime resolution
+never means that physical execution is authorized. Hardware-identity hashes are
+pseudonymous bindings, not a confidentiality mechanism. Agent must derive
+trust-domain bindings from reviewed physical and control provenance; Runtime
+only enforces the declared separation.

@@ -11,6 +11,15 @@ is intentionally small, standard-library-only, and device-free. Concrete
 sensor, model, robot, and transport integrations live in host applications or
 separate adapter packages.
 
+Runtime also defines neutral physical-system manifest, sequential protocol and
+terminal run-record contracts. They let an Agent bind typed, unit-bounded
+commands to calibrated devices and commissioned artifacts, then keep command
+acknowledgement separate from fresh, independent-trust-domain observations and
+explicit safe-stop results. Failed preconditions can be retained without ever
+dispatching the protected command. This imports no vendor framework and grants
+no execution authority. See
+[`docs/runtime-v1.md`](docs/runtime-v1.md#physical-workflow-contracts).
+
 ## Install
 
 The first packaged release is being prepared. From a checkout:
@@ -59,6 +68,15 @@ Validate one or more contract documents with:
 
 ```powershell
 tinyedge-runtime-validate fixtures/runtime-plan-v1.json
+```
+
+Physical protocol resolution is also non-actuating:
+
+```python
+from tinyedge_runtime import resolve_physical_protocol
+
+resolved = resolve_physical_protocol(manifest, protocol)
+assert resolved.physical_execution_authorized is False
 ```
 
 ## Safety and evidence boundary

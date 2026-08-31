@@ -33,6 +33,9 @@ capabilities and artifacts before calling Runtime.
 | Observation | `tinyedge-observation-v1` | Source identity, order, monotonic capture/receipt times and finite vectors |
 | Action chunk | `tinyedge-action-chunk-v1` | Source observation, ordered axes/units, validity horizon, model digest and finite actions |
 | Telemetry summary | `tinyedge-runtime-telemetry-v1` | Bounded lifecycle, rejection, timing, safe-stop and cleanup facts |
+| Physical-system manifest | `tinyedge-runtime-physical-manifest-v1` | Exact devices, lockable resources, typed commands, adapter/calibration bindings and qualification |
+| Physical protocol | `tinyedge-runtime-physical-protocol-v1` | Manifest-bound sequential command steps, typed arguments, timeouts, locks and evidence requirements |
+| Physical run record | `tinyedge-runtime-physical-run-record-v1` | Authorization binding, lifecycle, released locks, command acknowledgements, observed evidence and terminal cleanup |
 
 The strict Python definitions live in
 [`contracts/models.py`](../src/tinyedge_runtime/contracts/models.py) and the
@@ -137,12 +140,64 @@ SHA-256 equality is tamper evidence, not authentication. A production host must
 authenticate job intent, authorize and verify artifact bytes, establish current
 capabilities, and qualify concrete adapters independently.
 
+## Physical workflow contracts
+
+The physical contracts are a neutral interoperability boundary for
+commissioned, discrete workflows. They do not depend on a vendor framework, a
+message bus or a driver-discovery mechanism. A concrete host maps an
+explicitly reviewed adapter catalogue into `PhysicalSystemManifest`; capability
+names discovered from a device are not automatically promoted into commands.
+Raw hardware paths are excluded in favor of host-produced, domain-separated
+identity digests. Those digests are pseudonyms, not secrets: a party that can
+guess a small set of hardware identities may still compare candidate hashes.
+Each device also declares a host-bound trust-domain digest. Logical camera and
+robot entries in the same physical or control trust domain cannot validate one
+another merely by using different device IDs.
+
+`resolve_physical_protocol()` is deliberately side-effect free. It verifies the
+exact manifest digest, commissioned artifact and calibration bindings, command
+and argument types, numeric units and limits, command/observer/safe-stop locks,
+evidence fields, predicates, phases, and freshness windows. Actuating steps
+need both a precondition and postcondition from a different trust domain.
+Safety-stop commands are reserved for cleanup rather than ordinary protocol
+steps. Resolution returns the lowest command or artifact qualification found
+and always reports
+`physical_execution_authorized == False`. Authentication, short-lived local
+authorization, driver lifecycle and actual resource acquisition remain host
+responsibilities.
+
+The protocol is sequential in v1. Parallel stages are not representable until
+barrier, cancellation, lock-order and partial-failure semantics have their own
+versioned contract.
+
+`PhysicalRunRecord` keeps three facts separate:
+
+1. a command was dispatched;
+2. the adapter acknowledged it (or timed out/failed/cancelled);
+3. an independent producer supplied digest-bound evidence for the required
+   physical observation.
+
+A successful record requires every protocol step to be acknowledged within its
+timeout, every evidence requirement to have exactly one matching, timely value,
+and each lock to cover command execution, observation, and cleanup before
+release. Every actuated device also needs one explicit, confirmed safe-stop
+dispatch after its final actuation. The record is still only a strict,
+tamper-evident host report—not proof that the hardware was safe or that the
+evidence producer was truthful.
+
+A failed record may retain fresh, locked precondition evidence for exactly the
+next undispatched step. At least one such predicate must be false. This is how a
+host can prove “precondition failed; motion was not dispatched” without
+inventing a command attempt. A later command may dispatch only after all prior
+postconditions exist, pass, and remain fresh.
+
 ## Versioning and future strategies
 
-Runtime v1 supports only `local_sync_v1`. Multimodal tensor observations,
-asynchronous chunk scheduling, correction, transport envelopes, raw event
-ledgers and physical adapters are future additive work. They must not silently
-reinterpret a v1 field.
+Runtime v1's model-driven execution kernel supports only `local_sync_v1`.
+Multimodal tensor observations, asynchronous chunk scheduling, correction,
+transport envelopes, raw event ledgers and concrete physical adapters are
+future additive work. The physical workflow contracts added here are
+non-executing values and must not silently reinterpret a v1 field.
 
 The intended asynchronous design will use absolute control steps,
 controller-owned committed ranges, refill at or below a queue watermark,

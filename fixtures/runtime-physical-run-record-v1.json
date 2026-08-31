@@ -1,0 +1,107 @@
+{
+  "authorization_digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+  "commands": [
+    {
+      "acknowledged_monotonic_ns": 1200000000,
+      "completed_monotonic_ns": 1200000000,
+      "dispatch_id": "dispatch_observe_source",
+      "dispatched_monotonic_ns": 1100000000,
+      "failure_code": null,
+      "status": "acknowledged",
+      "step_id": "observe_source"
+    },
+    {
+      "acknowledged_monotonic_ns": 2000000000,
+      "completed_monotonic_ns": 2000000000,
+      "dispatch_id": "dispatch_move_destination",
+      "dispatched_monotonic_ns": 1300000000,
+      "failure_code": null,
+      "status": "acknowledged",
+      "step_id": "move_to_destination"
+    }
+  ],
+  "contract_version": "tinyedge-runtime-physical-run-record-v1",
+  "evidence": [
+    {
+      "captured_monotonic_ns": 2100000000,
+      "digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+      "evidence_id": "evidence_destination_state",
+      "evidence_kind": "physical_state",
+      "observed_value": "destination_station",
+      "producer_device_id": "overhead_camera",
+      "requirement_id": "destination_state",
+      "state_field": "cup_location",
+      "step_id": "move_to_destination",
+      "value_type": "identifier"
+    },
+    {
+      "captured_monotonic_ns": 1210000000,
+      "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "evidence_id": "evidence_source_state",
+      "evidence_kind": "physical_state",
+      "observed_value": "source_station",
+      "producer_device_id": "overhead_camera",
+      "requirement_id": "source_state",
+      "state_field": "cup_location",
+      "step_id": "move_to_destination",
+      "value_type": "identifier"
+    }
+  ],
+  "lifecycle": [
+    {
+      "monotonic_ns": 1000000000,
+      "sequence": 0,
+      "state": "created"
+    },
+    {
+      "monotonic_ns": 1010000000,
+      "sequence": 1,
+      "state": "locked"
+    },
+    {
+      "monotonic_ns": 1020000000,
+      "sequence": 2,
+      "state": "running"
+    },
+    {
+      "monotonic_ns": 2200000000,
+      "sequence": 3,
+      "state": "succeeded"
+    }
+  ],
+  "locks": [
+    {
+      "acquired_monotonic_ns": 1010000000,
+      "released_monotonic_ns": 2200000000,
+      "resource_id": "overhead_camera"
+    },
+    {
+      "acquired_monotonic_ns": 1010000000,
+      "released_monotonic_ns": 2200000000,
+      "resource_id": "so101_arm"
+    },
+    {
+      "acquired_monotonic_ns": 1010000000,
+      "released_monotonic_ns": 2200000000,
+      "resource_id": "workcell_motion_zone"
+    }
+  ],
+  "manifest_digest": "sha256:981c2d3d508098ed32bdb43be5f736cb6deff84e7f89369be8c62cc44363f1af",
+  "outcome": {
+    "failure_code": null,
+    "status": "succeeded"
+  },
+  "protocol_hash": "sha256:f278a042d3730e5595efa681455afdbea19fa45b07a72f26be1f8af682fed1ab",
+  "run_digest": "sha256:8602aa945deaed637d8c78ada390b918708266a405aa78bb27407e729b037ae3",
+  "run_id": "demo_run_001",
+  "safe_stops": [
+    {
+      "completed_monotonic_ns": 2120000000,
+      "confirmed": true,
+      "device_id": "so101_arm",
+      "dispatch_id": "safe_stop_so101",
+      "dispatched_monotonic_ns": 2110000000,
+      "failure_code": null
+    }
+  ]
+}
