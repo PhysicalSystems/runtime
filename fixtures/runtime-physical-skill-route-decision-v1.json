@@ -1,0 +1,45 @@
+{
+  "candidates": [
+    {
+      "execution_target": {
+        "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "kind": "robot_controller"
+      },
+      "implementation_digest": "sha256:44bac747c4aa048b68235c87a39dd9bb0d5e3b2b1d45cde9ba850d23f03ff1ca",
+      "implementation_id": "a_waypoint",
+      "mechanism": "waypoint_sequence",
+      "provider": "local_controller",
+      "rejection_codes": [],
+      "status": "selected"
+    },
+    {
+      "execution_target": {
+        "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "kind": "robot_controller"
+      },
+      "implementation_digest": "sha256:ff71bd53cb6f714e4c4f98b81092bbeaa026d7ea72366742bd0c9f9d7c034792",
+      "implementation_id": "b_learned",
+      "mechanism": "learned_policy",
+      "provider": "model_runtime",
+      "rejection_codes": [],
+      "status": "eligible_not_selected"
+    }
+  ],
+  "catalog_digest": "sha256:40875d1f3bb0245589999c599ccbe17624b38cca76361be3c0751b6179f9f0fc",
+  "contract_version": "tinyedge-runtime-physical-skill-route-decision-v1",
+  "decision_digest": "sha256:c2e916c4fda44260fa79da0a301276a26ae0baa3231f2feec4ffcaa7a02e3016",
+  "decision_status": "selected",
+  "invocation_digest": "sha256:0716c415118291b0741abf96cfa1995b8c3c4d540b3a303df52bc0b2120573fa",
+  "physical_execution_authorized": false,
+  "policy_digest": "sha256:e5e7633d238a6fd596fbbbb5dfc91de8c4bf92390fb06939dab17d775c011935",
+  "request_digest": "sha256:afd6889c308c918c1b786255a7c29b8bb494996bc90983c6cb199b708496539f",
+  "request_id": "route_request_001",
+  "request_rejection_codes": [],
+  "selected_execution_target": {
+    "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "kind": "robot_controller"
+  },
+  "selected_implementation_digest": "sha256:44bac747c4aa048b68235c87a39dd9bb0d5e3b2b1d45cde9ba850d23f03ff1ca",
+  "selected_implementation_id": "a_waypoint",
+  "state_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999"
+}

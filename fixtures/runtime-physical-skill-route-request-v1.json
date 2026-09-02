@@ -1,0 +1,115 @@
+{
+  "arguments": [
+    {
+      "name": "destination",
+      "value": "station_b",
+      "value_type": "identifier"
+    },
+    {
+      "name": "source",
+      "value": "station_a",
+      "value_type": "identifier"
+    },
+    {
+      "name": "speed_scale",
+      "value": 0.1,
+      "value_type": "number"
+    }
+  ],
+  "artifact_bindings": [
+    {
+      "binding_id": "policy_artifact",
+      "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "kind": "implementation"
+    },
+    {
+      "binding_id": "waypoint_catalog",
+      "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "kind": "implementation"
+    }
+  ],
+  "calibration_bindings": [
+    {
+      "binding_id": "workspace_frame",
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "kind": "geometry"
+    }
+  ],
+  "catalog_digest": "sha256:40875d1f3bb0245589999c599ccbe17624b38cca76361be3c0751b6179f9f0fc",
+  "contract_version": "tinyedge-runtime-physical-skill-route-request-v1",
+  "dependency_bindings": [
+    {
+      "binding_id": "motion_stack",
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "kind": "adapter"
+    }
+  ],
+  "evaluation_monotonic_ns": 1000,
+  "execution_targets": [
+    {
+      "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "kind": "robot_controller"
+    }
+  ],
+  "invocation_digest": "sha256:0716c415118291b0741abf96cfa1995b8c3c4d540b3a303df52bc0b2120573fa",
+  "manifest_digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+  "policy": {
+    "allowed_qualification_statuses": [
+      "qualified"
+    ],
+    "implementation_order": [
+      "a_waypoint",
+      "b_learned"
+    ],
+    "policy_digest": "sha256:e5e7633d238a6fd596fbbbb5dfc91de8c4bf92390fb06939dab17d775c011935",
+    "policy_id": "qualified_first"
+  },
+  "preconditions": [
+    {
+      "evidence_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "invocation_digest": "sha256:0716c415118291b0741abf96cfa1995b8c3c4d540b3a303df52bc0b2120573fa",
+      "observed_monotonic_ns": 900,
+      "precondition_id": "inside_taught_region",
+      "requirement_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "state_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "status": "met"
+    },
+    {
+      "evidence_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "invocation_digest": "sha256:0716c415118291b0741abf96cfa1995b8c3c4d540b3a303df52bc0b2120573fa",
+      "observed_monotonic_ns": 900,
+      "precondition_id": "target_visible",
+      "requirement_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "state_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "status": "met"
+    },
+    {
+      "evidence_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "invocation_digest": "sha256:0716c415118291b0741abf96cfa1995b8c3c4d540b3a303df52bc0b2120573fa",
+      "observed_monotonic_ns": 900,
+      "precondition_id": "workspace_clear",
+      "requirement_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "state_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "status": "met"
+    }
+  ],
+  "qualification_bindings": [
+    {
+      "binding_id": "policy_qualification",
+      "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "kind": "qualification_record"
+    },
+    {
+      "binding_id": "waypoint_qualification",
+      "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "kind": "qualification_record"
+    }
+  ],
+  "request_digest": "sha256:afd6889c308c918c1b786255a7c29b8bb494996bc90983c6cb199b708496539f",
+  "request_id": "route_request_001",
+  "skill_definition_digest": "sha256:6472b72a4fb735c7eaabfefd4edbaf416f2d3ed3ce84dace6fce81d0e2ff2cbf",
+  "skill_id": "transfer_container",
+  "state_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+  "workcell_digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+  "workcell_id": "cell_alpha"
+}

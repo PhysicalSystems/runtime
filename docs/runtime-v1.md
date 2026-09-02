@@ -36,6 +36,9 @@ capabilities and artifacts before calling Runtime.
 | Physical-system manifest | `tinyedge-runtime-physical-manifest-v1` | Exact devices, lockable resources, typed commands, adapter/calibration bindings and qualification |
 | Physical protocol | `tinyedge-runtime-physical-protocol-v1` | Manifest-bound sequential command steps, typed arguments, timeouts, locks and evidence requirements |
 | Physical run record | `tinyedge-runtime-physical-run-record-v1` | Authorization binding, lifecycle, released locks, command acknowledgements, observed evidence and terminal cleanup |
+| Physical skill catalog | `tinyedge-runtime-physical-skill-catalog-v1` | Workcell-bound skill definitions and their exact qualified implementation envelopes |
+| Physical skill route request | `tinyedge-runtime-physical-skill-route-request-v1` | One typed invocation plus current state, bindings, eligibility assessments and explicit routing policy |
+| Physical skill route decision | `tinyedge-runtime-physical-skill-route-decision-v1` | Selected/no-match result, exact execution target and stable per-candidate rejection facts |
 
 The strict Python definitions live in
 [`contracts/models.py`](../src/tinyedge_runtime/contracts/models.py) and the
@@ -190,6 +193,53 @@ next undispatched step. At least one such predicate must be false. This is how a
 host can prove “precondition failed; motion was not dispatched” without
 inventing a command attempt. A later command may dispatch only after all prior
 postconditions exist, pass, and remain fresh.
+
+## Physical skill implementation routing
+
+`route_physical_skill()` chooses an eligible implementation for one exact,
+typed skill invocation without opening hardware or authorizing movement. A
+catalog can associate several implementations with the same skill. Mechanism
+and provider are separate opaque identifiers: Runtime does not prefer, import,
+or invoke a provider and contains no vendor-, robot-, planner-, or model-family
+branches.
+
+Each implementation binds the exact skill definition, workcell, physical
+manifest, dependencies, calibration, artifacts, qualification record and
+execution target. It also declares its own eligibility requirements. Common
+skill preconditions and implementation-specific requirements are distinct so,
+for example, a failed fixed-region requirement can reject one implementation
+without making a broader implementation eligible automatically.
+
+The request binds:
+
+- exact typed arguments and a domain-separated invocation digest;
+- the current workcell manifest and structured-state digests;
+- currently available typed digest bindings and execution targets;
+- `met`, `violated`, or `unknown` assessments tied to the same invocation and
+  state snapshot; and
+- a sealed total ordering of every implementation for the requested skill,
+  plus the qualification statuses the policy explicitly permits.
+
+Routing first filters every candidate. Missing or changed dependencies,
+calibration, artifacts, qualification or execution targets reject the
+candidate. Missing, unknown, violated, future-dated, stale, wrong-state,
+wrong-requirement or wrong-invocation preconditions also reject it. The
+freshness comparison uses the request's monotonic evaluation time and the
+requirement's maximum age. Extra state supplied by the host does not make a
+candidate eligible.
+
+Only after filtering does Runtime choose the first eligible implementation in
+the policy's total order. The decision distinguishes `selected`,
+`eligible_not_selected`, and `rejected` candidates and uses bounded stable
+codes rather than free-form messages. It binds the selected implementation and
+execution target, but always sets `physical_execution_authorized` to `false`.
+A host must still authenticate intent, acquire locks, authorize a compiled
+plan or protocol, supervise adapters, and verify postconditions.
+
+The v1 router deliberately excludes learned or weighted ranking, benchmark
+statistics, automatic fallback execution and mid-motion switching. A new
+route requires a fresh request; stopping and observing safely before rerouting
+is a host responsibility.
 
 ## Versioning and future strategies
 

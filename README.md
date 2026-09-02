@@ -20,13 +20,31 @@ dispatching the protected command. This imports no vendor framework and grants
 no execution authority. See
 [`docs/runtime-v1.md`](docs/runtime-v1.md#physical-workflow-contracts).
 
+The unreleased 0.2 contract surface also defines deterministic physical skill
+implementation routing. A host supplies an exact typed invocation, current
+workcell bindings, fresh common and implementation-specific eligibility
+assessments, and an explicit total-order policy. Runtime explains which
+implementations were rejected or remained eligible, binds the selected
+execution target, and still grants no execution authority. Mechanism and
+provider identifiers are opaque; Runtime contains no vendor-specific routing
+logic. See
+[`docs/runtime-v1.md`](docs/runtime-v1.md#physical-skill-implementation-routing).
+
 ## Install
 
-Install the immutable Runtime release from PyPI:
+Runtime is not currently published on PyPI. Install the immutable v0.1.0 wheel
+from the GitHub release:
 
 ```powershell
-python -m pip install "tinyedge-runtime==0.1.0"
+python -m pip install "https://github.com/PhysicalSystems/tinyedge-runtime/releases/download/v0.1.0/tinyedge_runtime-0.1.0-py3-none-any.whl"
 ```
+
+Verify the asset against
+[`SHA256SUMS.txt`](https://github.com/PhysicalSystems/tinyedge-runtime/releases/download/v0.1.0/SHA256SUMS.txt)
+and review the
+[`v0.1.0` release](https://github.com/PhysicalSystems/tinyedge-runtime/releases/tag/v0.1.0).
+The 0.2.0 routing contracts described below are unreleased and are available
+only from this source branch until a separate release is authorized.
 
 For development from a checkout:
 
@@ -88,6 +106,15 @@ from tinyedge_runtime import resolve_physical_protocol
 
 resolved = resolve_physical_protocol(manifest, protocol)
 assert resolved.physical_execution_authorized is False
+```
+
+Physical skill routing follows the same boundary:
+
+```python
+from tinyedge_runtime import route_physical_skill
+
+decision = route_physical_skill(catalog, request)
+assert decision.physical_execution_authorized is False
 ```
 
 ## Safety and evidence boundary

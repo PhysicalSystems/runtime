@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tinyedge.ai/schemas/runtime/runtime-physical-skill-catalog-v1.schema.json",
+  "title": "TinyEdge Runtime physical skill catalog v1",
+  "description": "Structural projection of one sealed workcell-local physical skill catalog.",
+  "$comment": "This schema is a portable structural projection. The tinyedge_runtime Python parser remains authoritative for canonical ordering, uniqueness, exact skill and workcell bindings, nested digest verification, implementation-specific eligibility semantics, and catalog-digest verification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "catalog_id",
+    "workcell_id",
+    "workcell_digest",
+    "skills",
+    "implementations",
+    "catalog_digest"
+  ],
+  "properties": {
+    "contract_version": {"const": "tinyedge-runtime-physical-skill-catalog-v1"},
+    "catalog_id": {"$ref": "#/$defs/identifier"},
+    "workcell_id": {"$ref": "#/$defs/identifier"},
+    "workcell_digest": {"$ref": "#/$defs/digest"},
+    "skills": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/skill"}
+    },
+    "implementations": {
+      "type": "array",
+      "maxItems": 1024,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/implementation"}
+    },
+    "catalog_digest": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,127}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "nullableIdentifier": {
+      "anyOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]
+    },
+    "nullableNumber": {
+      "anyOf": [
+        {"type": "number", "minimum": -1000000000000, "maximum": 1000000000000},
+        {"type": "null"}
+      ]
+    },
+    "typedField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value_type", "required", "unit", "minimum", "maximum"],
+      "properties": {
+        "name": {"$ref": "#/$defs/identifier"},
+        "value_type": {
+          "enum": ["boolean", "integer", "number", "string", "identifier", "digest"]
+        },
+        "required": {"const": true},
+        "unit": {"$ref": "#/$defs/nullableIdentifier"},
+        "minimum": {"$ref": "#/$defs/nullableNumber"},
+        "maximum": {"$ref": "#/$defs/nullableNumber"}
+      }
+    },
+    "eligibilityRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requirement_id", "requirement_digest", "maximum_age_ns"],
+      "properties": {
+        "requirement_id": {"$ref": "#/$defs/identifier"},
+        "requirement_digest": {"$ref": "#/$defs/digest"},
+        "maximum_age_ns": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300000000000
+        }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binding_id", "kind", "digest"],
+      "properties": {
+        "binding_id": {"$ref": "#/$defs/identifier"},
+        "kind": {"$ref": "#/$defs/identifier"},
+        "digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "bindingVector": {
+      "type": "array",
+      "maxItems": 512,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/binding"}
+    },
+    "executionTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "digest"],
+      "properties": {
+        "kind": {"$ref": "#/$defs/identifier"},
+        "digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill_id", "input_fields", "preconditions", "skill_definition_digest"],
+      "properties": {
+        "skill_id": {"$ref": "#/$defs/identifier"},
+        "input_fields": {
+          "type": "array",
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/typedField"}
+        },
+        "preconditions": {
+          "type": "array",
+          "maxItems": 256,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/eligibilityRequirement"}
+        },
+        "skill_definition_digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementation_id",
+        "skill_id",
+        "skill_definition_digest",
+        "workcell_digest",
+        "mechanism",
+        "provider",
+        "manifest_digest",
+        "dependency_bindings",
+        "calibration_bindings",
+        "artifact_bindings",
+        "qualification_binding",
+        "qualification_status",
+        "execution_target",
+        "eligibility_requirements",
+        "declared_status",
+        "implementation_digest"
+      ],
+      "properties": {
+        "implementation_id": {"$ref": "#/$defs/identifier"},
+        "skill_id": {"$ref": "#/$defs/identifier"},
+        "skill_definition_digest": {"$ref": "#/$defs/digest"},
+        "workcell_digest": {"$ref": "#/$defs/digest"},
+        "mechanism": {"$ref": "#/$defs/identifier"},
+        "provider": {"$ref": "#/$defs/identifier"},
+        "manifest_digest": {"$ref": "#/$defs/digest"},
+        "dependency_bindings": {"$ref": "#/$defs/bindingVector"},
+        "calibration_bindings": {"$ref": "#/$defs/bindingVector"},
+        "artifact_bindings": {"$ref": "#/$defs/bindingVector"},
+        "qualification_binding": {"$ref": "#/$defs/binding"},
+        "qualification_status": {
+          "enum": ["qualified", "demo_qualified", "provisional", "blocked"]
+        },
+        "execution_target": {"$ref": "#/$defs/executionTarget"},
+        "eligibility_requirements": {
+          "type": "array",
+          "maxItems": 256,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/eligibilityRequirement"}
+        },
+        "declared_status": {"enum": ["available", "blocked"]},
+        "implementation_digest": {"$ref": "#/$defs/digest"}
+      }
+    }
+  }
+}
