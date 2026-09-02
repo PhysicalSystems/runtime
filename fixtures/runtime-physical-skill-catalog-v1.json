@@ -1,0 +1,146 @@
+{
+  "catalog_digest": "sha256:40875d1f3bb0245589999c599ccbe17624b38cca76361be3c0751b6179f9f0fc",
+  "catalog_id": "local_workcell_catalog",
+  "contract_version": "tinyedge-runtime-physical-skill-catalog-v1",
+  "implementations": [
+    {
+      "artifact_bindings": [
+        {
+          "binding_id": "waypoint_catalog",
+          "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "kind": "implementation"
+        }
+      ],
+      "calibration_bindings": [
+        {
+          "binding_id": "workspace_frame",
+          "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "kind": "geometry"
+        }
+      ],
+      "declared_status": "available",
+      "dependency_bindings": [
+        {
+          "binding_id": "motion_stack",
+          "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "kind": "adapter"
+        }
+      ],
+      "eligibility_requirements": [
+        {
+          "maximum_age_ns": 200,
+          "requirement_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "requirement_id": "inside_taught_region"
+        }
+      ],
+      "execution_target": {
+        "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "kind": "robot_controller"
+      },
+      "implementation_digest": "sha256:44bac747c4aa048b68235c87a39dd9bb0d5e3b2b1d45cde9ba850d23f03ff1ca",
+      "implementation_id": "a_waypoint",
+      "manifest_digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "mechanism": "waypoint_sequence",
+      "provider": "local_controller",
+      "qualification_binding": {
+        "binding_id": "waypoint_qualification",
+        "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+        "kind": "qualification_record"
+      },
+      "qualification_status": "qualified",
+      "skill_definition_digest": "sha256:6472b72a4fb735c7eaabfefd4edbaf416f2d3ed3ce84dace6fce81d0e2ff2cbf",
+      "skill_id": "transfer_container",
+      "workcell_digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+    },
+    {
+      "artifact_bindings": [
+        {
+          "binding_id": "policy_artifact",
+          "digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+          "kind": "implementation"
+        }
+      ],
+      "calibration_bindings": [
+        {
+          "binding_id": "workspace_frame",
+          "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "kind": "geometry"
+        }
+      ],
+      "declared_status": "available",
+      "dependency_bindings": [
+        {
+          "binding_id": "motion_stack",
+          "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "kind": "adapter"
+        }
+      ],
+      "eligibility_requirements": [
+        {
+          "maximum_age_ns": 200,
+          "requirement_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "requirement_id": "target_visible"
+        }
+      ],
+      "execution_target": {
+        "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "kind": "robot_controller"
+      },
+      "implementation_digest": "sha256:ff71bd53cb6f714e4c4f98b81092bbeaa026d7ea72366742bd0c9f9d7c034792",
+      "implementation_id": "b_learned",
+      "manifest_digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "mechanism": "learned_policy",
+      "provider": "model_runtime",
+      "qualification_binding": {
+        "binding_id": "policy_qualification",
+        "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "kind": "qualification_record"
+      },
+      "qualification_status": "qualified",
+      "skill_definition_digest": "sha256:6472b72a4fb735c7eaabfefd4edbaf416f2d3ed3ce84dace6fce81d0e2ff2cbf",
+      "skill_id": "transfer_container",
+      "workcell_digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+    }
+  ],
+  "skills": [
+    {
+      "input_fields": [
+        {
+          "maximum": null,
+          "minimum": null,
+          "name": "destination",
+          "required": true,
+          "unit": null,
+          "value_type": "identifier"
+        },
+        {
+          "maximum": null,
+          "minimum": null,
+          "name": "source",
+          "required": true,
+          "unit": null,
+          "value_type": "identifier"
+        },
+        {
+          "maximum": 0.25,
+          "minimum": 0.05,
+          "name": "speed_scale",
+          "required": true,
+          "unit": "ratio",
+          "value_type": "number"
+        }
+      ],
+      "preconditions": [
+        {
+          "maximum_age_ns": 200,
+          "requirement_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "requirement_id": "workspace_clear"
+        }
+      ],
+      "skill_definition_digest": "sha256:6472b72a4fb735c7eaabfefd4edbaf416f2d3ed3ce84dace6fce81d0e2ff2cbf",
+      "skill_id": "transfer_container"
+    }
+  ],
+  "workcell_digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+  "workcell_id": "cell_alpha"
+}

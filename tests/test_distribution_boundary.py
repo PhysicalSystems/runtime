@@ -20,4 +20,4 @@ def test_runtime_package_has_no_private_tinyedge_imports():
 
 
 def test_distribution_and_import_versions_match():
-    assert tinyedge_runtime.__version__ == "0.1.0"
+    assert tinyedge_runtime.__version__ == "0.2.0"

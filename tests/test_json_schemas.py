@@ -18,6 +18,9 @@ from tinyedge_runtime.contracts import (
     PhysicalProtocol,
     PhysicalRunRecord,
     PhysicalSystemManifest,
+    PhysicalSkillCatalog,
+    PhysicalSkillRouteDecision,
+    PhysicalSkillRouteRequest,
     RuntimeCapabilities,
     RuntimeContractError,
     RuntimePlan,
@@ -41,6 +44,15 @@ CONTRACTS: tuple[tuple[str, Parser], ...] = (
     ("runtime-physical-manifest-v1", PhysicalSystemManifest.from_dict),
     ("runtime-physical-protocol-v1", PhysicalProtocol.from_dict),
     ("runtime-physical-run-record-v1", PhysicalRunRecord.from_dict),
+    ("runtime-physical-skill-catalog-v1", PhysicalSkillCatalog.from_dict),
+    (
+        "runtime-physical-skill-route-request-v1",
+        PhysicalSkillRouteRequest.from_dict,
+    ),
+    (
+        "runtime-physical-skill-route-decision-v1",
+        PhysicalSkillRouteDecision.from_dict,
+    ),
 )
 
 

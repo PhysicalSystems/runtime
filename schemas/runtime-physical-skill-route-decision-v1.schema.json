@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tinyedge.ai/schemas/runtime/runtime-physical-skill-route-decision-v1.schema.json",
+  "title": "TinyEdge Runtime physical skill route decision v1",
+  "description": "Structural projection of one deterministic, non-authorizing physical skill route decision.",
+  "$comment": "This schema is a portable structural projection. The tinyedge_runtime Python parser remains authoritative for canonical ordering, selection consistency, stable rejection semantics, selected execution-target binding, forbidden execution authority, and decision-digest verification.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "request_id",
+    "request_digest",
+    "catalog_digest",
+    "policy_digest",
+    "state_digest",
+    "invocation_digest",
+    "decision_status",
+    "selected_implementation_id",
+    "selected_implementation_digest",
+    "selected_execution_target",
+    "request_rejection_codes",
+    "candidates",
+    "physical_execution_authorized",
+    "decision_digest"
+  ],
+  "properties": {
+    "contract_version": {"const": "tinyedge-runtime-physical-skill-route-decision-v1"},
+    "request_id": {"$ref": "#/$defs/identifier"},
+    "request_digest": {"$ref": "#/$defs/digest"},
+    "catalog_digest": {"$ref": "#/$defs/digest"},
+    "policy_digest": {"$ref": "#/$defs/digest"},
+    "state_digest": {"$ref": "#/$defs/digest"},
+    "invocation_digest": {"$ref": "#/$defs/digest"},
+    "decision_status": {"enum": ["selected", "no_match"]},
+    "selected_implementation_id": {
+      "anyOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]
+    },
+    "selected_implementation_digest": {
+      "anyOf": [{"$ref": "#/$defs/digest"}, {"type": "null"}]
+    },
+    "selected_execution_target": {
+      "anyOf": [{"$ref": "#/$defs/executionTarget"}, {"type": "null"}]
+    },
+    "request_rejection_codes": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "argument_out_of_bounds",
+          "argument_type_mismatch",
+          "catalog_mismatch",
+          "missing_argument",
+          "policy_incomplete",
+          "policy_unknown_implementation",
+          "skill_definition_mismatch",
+          "unknown_argument",
+          "unknown_skill",
+          "workcell_mismatch"
+        ]
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "maxItems": 1024,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/candidate"}
+    },
+    "physical_execution_authorized": {"const": false},
+    "decision_digest": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,127}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "executionTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "digest"],
+      "properties": {
+        "kind": {"$ref": "#/$defs/identifier"},
+        "digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementation_id",
+        "implementation_digest",
+        "mechanism",
+        "provider",
+        "execution_target",
+        "status",
+        "rejection_codes"
+      ],
+      "properties": {
+        "implementation_id": {"$ref": "#/$defs/identifier"},
+        "implementation_digest": {"$ref": "#/$defs/digest"},
+        "mechanism": {"$ref": "#/$defs/identifier"},
+        "provider": {"$ref": "#/$defs/identifier"},
+        "execution_target": {"$ref": "#/$defs/executionTarget"},
+        "status": {"enum": ["selected", "eligible_not_selected", "rejected"]},
+        "rejection_codes": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "artifact_mismatch",
+              "artifact_missing",
+              "calibration_mismatch",
+              "calibration_missing",
+              "dependency_mismatch",
+              "dependency_missing",
+              "execution_target_mismatch",
+              "execution_target_unavailable",
+              "implementation_blocked",
+              "manifest_mismatch",
+              "precondition_from_future",
+              "precondition_invocation_mismatch",
+              "precondition_missing",
+              "precondition_requirement_mismatch",
+              "precondition_stale",
+              "precondition_state_mismatch",
+              "precondition_unknown",
+              "precondition_violated",
+              "qualification_mismatch",
+              "qualification_missing",
+              "qualification_status_not_allowed"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
