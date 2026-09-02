@@ -596,7 +596,30 @@ def physical_skill_invocation_digest(
 ) -> str:
     """Hash one exact typed invocation independently of request transport state."""
 
-    argument_values = tuple(arguments)
+    try:
+        argument_iterator = iter(arguments)
+    except TypeError as error:
+        raise RuntimeContractError(
+            "invalid_type",
+            "physical_skill_invocation.arguments",
+            f"must be an iterable with at most {_MAX_FIELDS} TypedArgument items",
+        ) from error
+    bounded_arguments: list[TypedArgument] = []
+    for index, item in enumerate(argument_iterator):
+        if index >= _MAX_FIELDS:
+            raise RuntimeContractError(
+                "invalid_type",
+                "physical_skill_invocation.arguments",
+                f"must contain at most {_MAX_FIELDS} items",
+            )
+        if not isinstance(item, TypedArgument):
+            raise RuntimeContractError(
+                "invalid_type",
+                f"physical_skill_invocation.arguments[{index}]",
+                "must be a TypedArgument",
+            )
+        bounded_arguments.append(item)
+    argument_values = tuple(bounded_arguments)
     if len({item.name for item in argument_values}) != len(argument_values):
         raise RuntimeContractError(
             "duplicate_argument",
@@ -860,6 +883,13 @@ class PhysicalSkillCatalog:
                         "physical_skill_catalog.implementations",
                         f"{requirement.requirement_id!r} has conflicting semantics",
                     )
+        for skill_id, requirements in requirements_by_skill.items():
+            if len(requirements) > _MAX_REQUIREMENTS:
+                raise RuntimeContractError(
+                    "eligibility_requirement_limit_exceeded",
+                    "physical_skill_catalog.implementations",
+                    f"skill {skill_id!r} has more than {_MAX_REQUIREMENTS} distinct requirements",
+                )
         result = cls(
             contract_version=version,
             catalog_id=_identifier(

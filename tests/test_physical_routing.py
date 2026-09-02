@@ -587,6 +587,39 @@ def test_precondition_assessment_is_bound_to_the_exact_invocation():
     ).rejection_codes
 
 
+def test_invocation_digest_rejects_more_than_the_contract_field_limit():
+    arguments = tuple(
+        TypedArgument.from_dict(
+            {
+                "name": f"argument_{index:03}",
+                "value_type": "identifier",
+                "value": "value",
+            }
+        )
+        for index in range(129)
+    )
+
+    _assert_code(
+        lambda: physical_skill_invocation_digest(
+            skill_id="transfer_container",
+            skill_definition_digest=_skill()["skill_definition_digest"],
+            arguments=arguments,
+        ),
+        "invalid_type",
+    )
+
+
+def test_invocation_digest_rejects_non_argument_items_with_contract_error():
+    _assert_code(
+        lambda: physical_skill_invocation_digest(
+            skill_id="transfer_container",
+            skill_definition_digest=_skill()["skill_definition_digest"],
+            arguments=(object(),),  # type: ignore[arg-type]
+        ),
+        "invalid_type",
+    )
+
+
 def test_contract_hashes_are_tamper_evident_and_decisions_are_deterministic():
     catalog = make_catalog()
     request = make_request(catalog)
@@ -611,6 +644,45 @@ def test_catalog_rejects_ambiguous_implementation_eligibility_requirements():
     _assert_code(
         lambda: PhysicalSkillCatalog.from_dict(seal_physical_skill_catalog(value)),
         "ambiguous_eligibility_requirement",
+    )
+
+
+def _many_requirements(prefix: str, count: int) -> list[dict[str, Any]]:
+    return [
+        _requirement(f"{prefix}_{index:03}", DIGEST["f"])
+        for index in range(count)
+    ]
+
+
+def test_catalog_accepts_exact_per_skill_eligibility_union_limit():
+    value = make_catalog_dict()
+    value["implementations"][0]["eligibility_requirements"] = _many_requirements(
+        "waypoint_requirement", 127
+    )
+    value["implementations"][1]["eligibility_requirements"] = _many_requirements(
+        "learned_requirement", 128
+    )
+
+    catalog = PhysicalSkillCatalog.from_dict(seal_physical_skill_catalog(value))
+
+    assert len(catalog.skills[0].preconditions) == 1
+    assert sum(
+        len(item.eligibility_requirements) for item in catalog.implementations
+    ) == 255
+
+
+def test_catalog_rejects_per_skill_eligibility_union_over_request_limit():
+    value = make_catalog_dict()
+    value["implementations"][0]["eligibility_requirements"] = _many_requirements(
+        "waypoint_requirement", 128
+    )
+    value["implementations"][1]["eligibility_requirements"] = _many_requirements(
+        "learned_requirement", 128
+    )
+
+    _assert_code(
+        lambda: PhysicalSkillCatalog.from_dict(seal_physical_skill_catalog(value)),
+        "eligibility_requirement_limit_exceeded",
     )
 
 
